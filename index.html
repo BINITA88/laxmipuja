@@ -34,6 +34,13 @@
     font: inherit; font-size: 12px; cursor: pointer; opacity: 0; transition: opacity .8s;
   }
   .replay.show { opacity: 1; }
+  .sound-start {
+    position: absolute; z-index: 6; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    border: 1px solid #ffd36a; background: #29152bf2; color: #ffe9ad;
+    border-radius: 30px; padding: 12px 18px; font: inherit; font-size: 14px;
+    cursor: pointer; box-shadow: 0 0 22px #ff9d3266;
+  }
+  .sound-start.hide { display: none; }
   @media (max-width: 600px) {
     .message { top: 19%; width: 92%; }
     .hint { bottom: 14px; font-size: 10px; }
@@ -47,6 +54,7 @@
   <audio id="music" autoplay loop preload="auto" playsinline>
     <source src="audio/Bhailini%20Aayo%20Aagana%20-%20Lochan%20Bhattarai%20_%20Tiharai%20Aayo%20Lau%20Jhilimili%20_%20Music%20Nepal%20Official%20%5BOcvcp3mrWiU%5D%20%281%29.mp3" type="audio/mpeg">
   </audio>
+  <button class="sound-start" id="soundStart">🔊 संगीत सुरु गर्न यहाँ छुनुहोस्</button>
  
   <div class="message" id="message">
     <div class="wish">लक्ष्मी जस्तै सुन्दर मन र रूप भएकी प्रतिमा तिमीलाई<br>लक्ष्मी पूजाको धेरै धेरै शुभकामना।</div>
@@ -62,6 +70,7 @@
   const replay = document.getElementById('replay');
   const hint = document.getElementById('hint');
   const music = document.getElementById('music');
+  const soundStart = document.getElementById('soundStart');
   const MUSIC_START_SECONDS = 15;
   let W, H, dpr, start, raf, diyas = [], sparks = [], rockets = [], stars = [];
   const rand = (a,b) => a + Math.random()*(b-a);
@@ -269,9 +278,12 @@
   }
   function startMusic(){
     playMusic();
+    soundStart.classList.add('hide');
     window.removeEventListener('pointerdown',startMusic);
     window.removeEventListener('keydown',startMusic);
   }
+  soundStart.addEventListener('click',startMusic);
+  music.addEventListener('playing',()=>soundStart.classList.add('hide'));
   music.addEventListener('loadedmetadata',playMusic,{once:true});
   playMusic();
   music.play().catch(()=>{
