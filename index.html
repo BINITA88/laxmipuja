@@ -44,6 +44,9 @@
 <body>
 <div id="scene">
   <canvas id="art"></canvas>
+  <audio id="music" autoplay loop preload="auto" playsinline>
+    <source src="audio/Bhailini%20Aayo%20Aagana%20-%20Lochan%20Bhattarai%20_%20Tiharai%20Aayo%20Lau%20Jhilimili%20_%20Music%20Nepal%20Official%20%5BOcvcp3mrWiU%5D%20%281%29.mp3" type="audio/mpeg">
+  </audio>
  
   <div class="message" id="message">
     <div class="wish">लक्ष्मी जस्तै सुन्दर मन भएकी<br>प्रतिमालाई लक्ष्मी पूजाको<br>हार्दिक मंगलमय शुभकामना।</div>
@@ -58,6 +61,8 @@
   const message = document.getElementById('message');
   const replay = document.getElementById('replay');
   const hint = document.getElementById('hint');
+  const music = document.getElementById('music');
+  const MUSIC_START_SECONDS = 15;
   let W, H, dpr, start, raf, diyas = [], sparks = [], rockets = [], stars = [];
   const rand = (a,b) => a + Math.random()*(b-a);
   const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
@@ -254,8 +259,25 @@
   function restart(){
     cancelAnimationFrame(raf);start=0;sparks=[];message.classList.remove('show');
     replay.classList.remove('show');hint.style.opacity='.75';
-    diyas.forEach(d=>d.lit=false);raf=requestAnimationFrame(animate);
+    diyas.forEach(d=>d.lit=false);
+    playMusic();
+    raf=requestAnimationFrame(animate);
   }
+  function playMusic(){
+    music.currentTime=MUSIC_START_SECONDS;
+    music.play().catch(()=>{});
+  }
+  function startMusic(){
+    playMusic();
+    window.removeEventListener('pointerdown',startMusic);
+    window.removeEventListener('keydown',startMusic);
+  }
+  music.addEventListener('loadedmetadata',playMusic,{once:true});
+  playMusic();
+  music.play().catch(()=>{
+    window.addEventListener('pointerdown',startMusic,{once:true});
+    window.addEventListener('keydown',startMusic,{once:true});
+  });
   replay.addEventListener('click',restart);
   window.addEventListener('resize',resize);
   resize();raf=requestAnimationFrame(animate);
